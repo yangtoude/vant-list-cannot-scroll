@@ -1,0 +1,82 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://unpkg.com/vant@2.12.54/lib/index.css">
+    <style>
+      .wallet-record__container {
+        height: 100%;
+        overflow: hidden;
+      }
+      .wallet-record__list {
+        height: calc(100% - 50px);
+        overflow: scroll;
+        background: lightblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wallet-record__container" id="walletAccountRecord">
+      <div class="wallet-record__list">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <van-cell v-for="item in list" :key="item" :title="item" />
+          </van-list>
+        </van-pull-refresh>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.10/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/vant@2.12.54/lib/vant.min.js"></script>
+
+    <script>
+      var vm = new Vue({
+        el: '#walletAccountRecord',
+        data() {
+          return {
+            list: [],
+            loading: false,
+            finished: false,
+            refreshing: false,
+          };
+        },
+        methods: {
+          onLoad() {
+            setTimeout(() => {
+              if (this.refreshing) {
+                this.list = [];
+                this.refreshing = false;
+              }
+
+              for (let i = 0; i < 10; i++) {
+                this.list.push(this.list.length + 1);
+              }
+              this.loading = false;
+
+              if (this.list.length >= 40) {
+                this.finished = true;
+              }
+            }, 1000);
+          },
+          onRefresh() {
+            // 清空列表数据
+            this.finished = false;
+
+            // 重新加载数据
+            // 将 loading 设置为 true，表示处于加载状态
+            this.loading = true;
+            this.onLoad();
+          },
+        }
+      })
+    </script>
+  </body>
+</html>
